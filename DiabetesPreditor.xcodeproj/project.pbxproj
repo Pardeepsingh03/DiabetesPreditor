@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CE14BA382E2692F100834151 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CE14BA372E2692F100834151 /* FirebaseAuth */; };
+		CE14BA3A2E2692F100834151 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = CE14BA392E2692F100834151 /* FirebaseCore */; };
+		CE14BA3F2E26C17C00834151 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = CE14BA3E2E26C17C00834151 /* GoogleSignIn */; };
+		CE14BA412E26C17C00834151 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CE14BA402E26C17C00834151 /* GoogleSignInSwift */; };
+		CE14BA5A2E27DEFE00834151 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = CE14BA592E27DEFE00834151 /* FirebaseDatabase */; };
+		CE14BA5C2E27DEFE00834151 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CE14BA5B2E27DEFE00834151 /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		CE14BA142E26791900834151 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +38,22 @@
 		CE14BA1D2E26791900834151 /* DiabetesPreditorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DiabetesPreditorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CE14BA452E26C1EE00834151 /* Exceptions for "DiabetesPreditor" folder in "DiabetesPreditor" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CE14BA052E26791700834151 /* DiabetesPreditor */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CE14BA082E26791700834151 /* DiabetesPreditor */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CE14BA452E26C1EE00834151 /* Exceptions for "DiabetesPreditor" folder in "DiabetesPreditor" target */,
+			);
 			path = DiabetesPreditor;
 			sourceTree = "<group>";
 		};
@@ -52,6 +74,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE14BA5A2E27DEFE00834151 /* FirebaseDatabase in Frameworks */,
+				CE14BA3A2E2692F100834151 /* FirebaseCore in Frameworks */,
+				CE14BA382E2692F100834151 /* FirebaseAuth in Frameworks */,
+				CE14BA3F2E26C17C00834151 /* GoogleSignIn in Frameworks */,
+				CE14BA412E26C17C00834151 /* GoogleSignInSwift in Frameworks */,
+				CE14BA5C2E27DEFE00834151 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +140,12 @@
 			);
 			name = DiabetesPreditor;
 			packageProductDependencies = (
+				CE14BA372E2692F100834151 /* FirebaseAuth */,
+				CE14BA392E2692F100834151 /* FirebaseCore */,
+				CE14BA3E2E26C17C00834151 /* GoogleSignIn */,
+				CE14BA402E26C17C00834151 /* GoogleSignInSwift */,
+				CE14BA592E27DEFE00834151 /* FirebaseDatabase */,
+				CE14BA5B2E27DEFE00834151 /* FirebaseFirestore */,
 			);
 			productName = DiabetesPreditor;
 			productReference = CE14BA062E26791700834151 /* DiabetesPreditor.app */;
@@ -195,6 +229,10 @@
 			);
 			mainGroup = CE14B9FD2E26791700834151;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CE14BA362E2692F100834151 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				CE14BA3D2E26C17C00834151 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CE14BA072E26791700834151 /* Products */;
 			projectDirPath = "";
@@ -397,6 +435,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DiabetesPreditor/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Diabix;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -420,10 +461,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DiabetesPreditor/DiabetesPreditorRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A4CCC8CNMN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DiabetesPreditor/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Diabix;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -550,6 +596,58 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CE14BA362E2692F100834151 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.15.0;
+			};
+		};
+		CE14BA3D2E26C17C00834151 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CE14BA372E2692F100834151 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE14BA362E2692F100834151 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		CE14BA392E2692F100834151 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE14BA362E2692F100834151 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		CE14BA3E2E26C17C00834151 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE14BA3D2E26C17C00834151 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		CE14BA402E26C17C00834151 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE14BA3D2E26C17C00834151 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+		CE14BA592E27DEFE00834151 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE14BA362E2692F100834151 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		CE14BA5B2E27DEFE00834151 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE14BA362E2692F100834151 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CE14B9FE2E26791700834151 /* Project object */;
 }
