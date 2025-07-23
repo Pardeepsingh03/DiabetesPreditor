@@ -148,11 +148,7 @@ struct HealthDataInputView: View {
     }
 }
 
-struct HealthDataInputView_Previews: PreviewProvider {
-    static var previews: some View {
-        HealthDataInputView()
-    }
-}
+
 
 struct CustomTextField: View {
     var label: String
