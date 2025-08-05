@@ -2,13 +2,18 @@ import SwiftUI
 import Charts
 
 struct PredictionGraphView: View {
+    @State private var cfFeature = "Glucose"
+    @State private var cfDelta = "20"
+    @State private var cfEffectResult: Double? = nil
     @StateObject private var viewModel = PredictionGraphViewModel()
     @State private var showNewPrediction = false
     @EnvironmentObject var viewModel1: PredictionViewModel
+    @State private var causalEffect: Double? = nil
+    @State private var counterfactualEffect: Double? = nil
 
     var body: some View {
         NavigationView {
-            Group {
+            VStack {
                 if viewModel.isLoading {
                     ProgressView("Loading latest prediction...")
                         .progressViewStyle(CircularProgressViewStyle())
@@ -22,11 +27,41 @@ struct PredictionGraphView: View {
                             // Anchor Rules
                             anchorRuleChart(prediction: prediction)
 
-                            // Causal Effects
-                            causalChart(prediction: prediction)
+                            CausalChartView(
+                                prediction: prediction,
+                                onRun: { feature, delta in
+                                    let input = PatientInput(
+                                        Pregnancies: prediction.input.Pregnancies,
+                                        Glucose: prediction.input.Glucose,
+                                        BloodPressure: prediction.input.BloodPressure,
+                                        SkinThickness: prediction.input.SkinThickness,
+                                        Insulin: prediction.input.Insulin,
+                                        BMI: prediction.input.BMI,
+                                        DiabetesPedigreeFunction: prediction.input.DiabetesPedigreeFunction,
+                                        Age: prediction.input.Age
+                                    )
+
+                                    viewModel1.fetchCounterfactual(for: input, feature: feature, delta: delta) {
+                                              // Delay ensures SwiftUI redraws properly
+                                                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                                                    withAnimation {
+                                                        causalEffect = viewModel1.cfResult?.causal_effect
+                                                        counterfactualEffect = viewModel1.cfResult?.counterfactual_effect
+                                                    }
+                                                  
+                                                }
+                                    }
+                                },
+                                causalEffect: $causalEffect,
+                                counterfactualEffect: $counterfactualEffect
+                                
+                            )
+
+
+
 
                             // Additional Details
-                            explanationCard(prediction: prediction)
+                           
 
                             NavigationLink(destination: ExplanationGraphView()) {
                                 HStack {
@@ -64,13 +99,18 @@ struct PredictionGraphView: View {
                 }
             }
             .fullScreenCover(isPresented: $showNewPrediction, onDismiss: {
-                    viewModel.isLoading = true
+            
                     viewModel.loadLatestPrediction()
+            
+                
                 }) {
                     HealthDataInputView()
                 }
                 .task {
-                    viewModel.loadLatestPrediction()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        viewModel.loadLatestPrediction()
+                    }
+                    
                 }
         }
     }
@@ -108,47 +148,78 @@ struct PredictionGraphView: View {
 
     func anchorRuleChart(prediction: PredictionHistory) -> some View {
         card(title: "Anchor Rules Impact") {
-            Chart {
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(prediction.anchorRules.indices, id: \.self) { index in
-                    BarMark(
-                        x: .value("Rule", prediction.anchorRules[index]),
-                        y: .value("Precision", prediction.anchorPrecision)
-                    )
-                    .foregroundStyle(Color.blue.gradient)
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(alignment: .top, spacing: 8) {
+                            Image(systemName: "lightbulb.fill")
+                                .foregroundColor(.yellow)
+                                .font(.title3)
+
+                            Text(humanReadableRule(from: prediction.anchorRules[index]))
+                                .font(.body)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+                                .multilineTextAlignment(.leading)
+                        }
+
+                        ProgressView(value: prediction.anchorPrecision)
+                            .progressViewStyle(LinearProgressViewStyle(tint: Color.blue))
+                            .frame(height: 8)
+                            .clipShape(Capsule())
+
+                        HStack {
+                            Image(systemName: "checkmark.seal.fill")
+                                .foregroundColor(.blue)
+                            Text("Confidence: \(Int(prediction.anchorPrecision * 100))%")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding()
+                    .background(Color.blue.opacity(0.05))
+                    .cornerRadius(12)
+                    .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
                 }
             }
-            .frame(height: 200)
         }
     }
 
-    func causalChart(prediction: PredictionHistory) -> some View {
-        card(title: "Causal Effect Analysis") {
-            Chart {
-                BarMark(
-                    x: .value("Type", "Causal Effect"),
-                    y: .value("Effect", prediction.causalEffect)
-                )
-                .foregroundStyle(Color.green.gradient)
 
-                BarMark(
-                    x: .value("Type", "Counterfactual Effect"),
-                    y: .value("Effect", prediction.counterfactualEffect)
-                )
-                .foregroundStyle(Color.orange.gradient)
-            }
-            .frame(height: 180)
-        }
+
+
+//    func explanationCard(prediction: PredictionHistory) -> some View {
+//        card(title: "Explanation") {
+//            VStack(alignment: .leading, spacing: 8) {
+//                labelRow("📌 Anchor Coverage", "\(String(format: "%.2f", prediction.anchorCoverage))")
+//                labelRow("🧪 Causal Effect", "\(String(format: "%.4f", prediction.causalEffect))")
+//                labelRow("🔄 Counterfactual", "\(String(format: "%.4f", prediction.counterfactualEffect))")
+//            }
+//        }
+//    }
+    
+   
+
+    
+    func humanReadableRule(from rawRule: String) -> String {
+        let formatted = rawRule
+            .replacingOccurrences(of: ">", with: "is greater than")
+            .replacingOccurrences(of: "<", with: "is less than")
+            .replacingOccurrences(of: ">=", with: "is at least")
+            .replacingOccurrences(of: "<=", with: "is at most")
+            .replacingOccurrences(of: "==", with: "is equal to")
+
+        return formatted
+            .replacingOccurrences(of: "Pregnancies", with: "Number of pregnancies")
+            .replacingOccurrences(of: "Glucose", with: "Glucose level")
+            .replacingOccurrences(of: "BloodPressure", with: "Blood pressure")
+            .replacingOccurrences(of: "SkinThickness", with: "Skin thickness")
+            .replacingOccurrences(of: "Insulin", with: "Insulin level")
+            .replacingOccurrences(of: "BMI", with: "Body Mass Index (BMI)")
+            .replacingOccurrences(of: "DiabetesPedigreeFunction", with: "Diabetes pedigree function")
+            .replacingOccurrences(of: "Age", with: "Age")
     }
 
-    func explanationCard(prediction: PredictionHistory) -> some View {
-        card(title: "Explanation") {
-            VStack(alignment: .leading, spacing: 8) {
-                labelRow("📌 Anchor Coverage", "\(String(format: "%.2f", prediction.anchorCoverage))")
-                labelRow("🧪 Causal Effect", "\(String(format: "%.4f", prediction.causalEffect))")
-                labelRow("🔄 Counterfactual", "\(String(format: "%.4f", prediction.counterfactualEffect))")
-            }
-        }
-    }
 
     func card<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -162,6 +233,7 @@ struct PredictionGraphView: View {
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
     }
+    
 
     func labelRow(_ label: String, _ value: String) -> some View {
         HStack {
@@ -177,17 +249,14 @@ struct PredictionGraphView: View {
 
 
 // MARK: - Preview
-struct PredictionGraphView_Previews: PreviewProvider {
-    static var previews: some View {
-        PredictionGraphView()
-    }
-}
+
 
 class PredictionGraphViewModel: ObservableObject {
     @Published var latestPrediction: PredictionHistory?
     @Published var isLoading = true
-
+   
     func loadLatestPrediction() {
+        
         guard let userId = UserDefaults.standard.string(forKey: "uid") else {
             print("❌ No user ID in UserDefaults")
             return
@@ -197,8 +266,12 @@ class PredictionGraphViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self?.latestPrediction = prediction
                 self?.isLoading = false
+                print("✅ Loaded prediction: \(String(describing: self?.latestPrediction))")
+
             }
         }
     }
 }
+
+
 

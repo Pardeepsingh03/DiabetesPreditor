@@ -11,6 +11,7 @@ import FirebaseFirestore
 // MARK: - Model
 struct PredictionHistory: Codable, Identifiable {
     @DocumentID var id: String?
+    let input: PatientInput
     let prediction: Int
     let confidence: Double
     let anchorRules: [String]
@@ -28,9 +29,9 @@ class PredictionHistoryService {
     private let db = Firestore.firestore()
 
     // MARK: Save Prediction
-    func savePredictionToHistory(userId: String, data: PredictionResponse) {
+    func savePredictionToHistory(userId: String, data: PredictResponse) {
         let history = PredictionHistory(
-            prediction: data.prediction,
+            input: data.input, prediction: data.prediction,
             confidence: data.confidence,
             anchorRules: data.anchor_rule,
             anchorPrecision: data.anchor_precision,

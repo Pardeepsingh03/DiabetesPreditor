@@ -12,13 +12,8 @@ struct HealthDataInputView: View {
     @State private var age: String = ""
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: PredictionViewModel
-   
-
-    
-
     @State private var showValidationError = false
     @State private var showPrediction = false
-
     var body: some View {
         NavigationView {
             ScrollView {
@@ -72,22 +67,22 @@ struct HealthDataInputView: View {
                                         text: $age,
                                         keyboard: .numberPad)
                     }
-
+                   
 
                     Button(action: {
                         if validateInputs() {
-                            let payload: [String: Any] = [
-                                "Pregnancies": Double(pregnancies) ?? 0,
-                                "Glucose": Double(glucose) ?? 0,
-                                "BloodPressure": Double(bloodPressure) ?? 0,
-                                "SkinThickness": Double(skinThickness) ?? 0,
-                                "Insulin": Double(insulin) ?? 0,
-                                "BMI": Double(bmi) ?? 0,
-                                "DiabetesPedigreeFunction": Double(dpf) ?? 0,
-                                "Age": Double(age) ?? 0
-                            ]
+                            let patientInput = PatientInput(
+                                Pregnancies: Double(pregnancies) ?? 0,
+                                Glucose: Double(glucose) ?? 0,
+                                BloodPressure: Double(bloodPressure) ?? 0,
+                                SkinThickness: Double(skinThickness) ?? 0,
+                                Insulin: Double(insulin) ?? 0,
+                                BMI: Double(bmi) ?? 0,
+                                DiabetesPedigreeFunction: Double(dpf) ?? 0,
+                                Age: Double(age) ?? 0
+                            )
 
-                            viewModel.fetchPrediction(with: payload) {
+                            viewModel.fetchPrediction(with: patientInput) {
                                 dismiss()
                                 viewModel.showData.toggle()
                             }
@@ -146,6 +141,20 @@ struct HealthDataInputView: View {
         let fields = [pregnancies, glucose, bloodPressure, skinThickness, insulin, bmi, dpf, age]
         return !fields.contains(where: { $0.trimmingCharacters(in: .whitespaces).isEmpty })
     }
+    
+    func buildPatientInput() -> PatientInput {
+        return PatientInput(
+            Pregnancies: Double(pregnancies) ?? 0,
+            Glucose: Double(glucose) ?? 0,
+            BloodPressure: Double(bloodPressure) ?? 0,
+            SkinThickness: Double(skinThickness) ?? 0,
+            Insulin: Double(insulin) ?? 0,
+            BMI: Double(bmi) ?? 0,
+            DiabetesPedigreeFunction: Double(dpf) ?? 0,
+            Age: Double(age) ?? 0
+        )
+    }
+
 }
 
 

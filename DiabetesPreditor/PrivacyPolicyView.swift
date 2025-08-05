@@ -1,32 +1,62 @@
+//
+//  PrivacyPolicyView.swift
+//  DiabetesPredictor
+//
+//  Created by Parry on 05/08/2025.
+//
+
 import SwiftUI
 
 struct PrivacyPolicyView: View {
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Privacy Policy")
-                    .font(.largeTitle)
-                    .bold()
-
-                Text("This application respects your privacy. All health data entered in the app remains on your device and is not stored permanently or shared with any third-party services.")
+            VStack(alignment: .leading, spacing: 20) {
                 
+                // MARK: - Introduction
+                
+                
+                Text("""
+Diabix is committed to protecting your personal information. This application respects your privacy and ensures that all health data entered remains secure and private. Your data is not permanently stored or shared with any third-party services.
+""")
+
+                // MARK: - Data Usage
                 Text("Data Usage")
                     .font(.headline)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("• Health data is used exclusively for generating real-time predictions and explanations.")
+                    Text("• No personal identifiers are collected or stored.")
+                    Text("• All data is processed securely through local or encrypted API communication.")
+                }
 
-                Text("• Your health data is used solely to generate predictions and explanations locally or via secure API calls.\n• No personal identifiers are stored.\n• Data is processed only for the purpose of generating real-time insights.")
-
-                Text("Audit & Logs")
+                // MARK: - Audit & Logging
+                Text("Audit & Logging")
                     .font(.headline)
 
-                Text("Prediction requests are locally logged for audit and transparency purposes. No sensitive or identifiable information is stored.")
+                Text("""
+Prediction requests are optionally logged on-device to provide transparency and auditing capabilities. These logs do not contain any sensitive or identifiable data.
+""")
 
+                // MARK: - Security
                 Text("Security")
                     .font(.headline)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("• All communication with backend services is encrypted.")
+                    Text("• No data is permanently stored on external servers.")
+                    Text("• Predictions are processed in real time using anonymized input features.")
+                }
 
-                Text("• Secure communication between app and backend\n• No data is permanently stored\n• All predictions are generated in real-time using anonymized inputs")
+                // MARK: - Contact Information
+                Text("Contact Us")
+                    .font(.headline)
+                
+                Text("If you have any questions regarding this policy, please contact our support team at:")
+                Text("support@diabix.app")
+                    .foregroundColor(.blue)
+                    .underline()
 
-                Text("For more information, contact the developer team at: support@diabix.app")
-
+                // MARK: - Last Updated
                 Text("Last Updated: August 2025")
                     .font(.subheadline)
                     .foregroundColor(.gray)

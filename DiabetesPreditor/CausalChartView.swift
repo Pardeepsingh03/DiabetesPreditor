@@ -5,71 +5,110 @@ struct CausalChartView: View {
     let prediction: PredictionHistory
     let onRun: (_ feature: String, _ delta: Double) -> Void
 
-    @State private var feature: String = ""
+    @Binding var causalEffect: Double?
+    @Binding var counterfactualEffect: Double?
+
+    @State private var feature: String = "Glucose"
     @State private var delta: String = ""
 
+    // 👇 Track which field is focused
+    @FocusState private var focusedField: Field?
+
+    enum Field: Hashable {
+        case deltaField
+    }
+
     var body: some View {
-        let effects: [(label: String, value: Double, color: Color, description: String)] = [
-            ("Causal Effect", prediction.causalEffect, .green, "Direct impact of variable on outcome."),
-            ("Counterfactual Effect", prediction.counterfactualEffect, .orange, "Estimated impact if input was changed.")
+        let effects: [(label: String, value: Double?, color: Color, description: String)] = [
+            ("Causal Effect", causalEffect, .green, "Shows how much a change in the selected feature *directly* influences the prediction."),
+            ("Counterfactual Effect", counterfactualEffect, .orange, "Estimates how the prediction would change *if* this feature were changed by the given delta.")
         ]
 
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Causal Effect Analysis")
-                .font(.headline)
+        VStack(alignment: .leading, spacing: 20) {
+            Text("📊 Causal Effect Analysis")
+                .font(.title2.bold())
 
-            HStack(spacing: 12) {
-                TextField("Feature (e.g. Glucose)", text: $feature)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: 150)
+            VStack(alignment: .leading, spacing: 12) {
+                Text("🔍 Enter a feature and delta to explore its effect on the prediction:")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
 
-                TextField("Δ (delta)", text: $delta)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: 80)
-                    .keyboardType(.decimalPad)
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Feature Name")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    TextField("e.g. Glucose", text: $feature)
+                        .textFieldStyle(.roundedBorder)
+                        .disabled(true)
 
-                Button("Run") {
-                    guard let deltaValue = Double(delta), !feature.isEmpty else {
-                        // Handle invalid input here if needed
-                        return
+                    Text("Δ (Change to Apply)")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    TextField("e.g. 2.0", text: $delta)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.decimalPad)
+                        .focused($focusedField, equals: .deltaField)
+
+                    Button(action: {
+                        guard let deltaValue = Double(delta), !feature.isEmpty else { return }
+
+                        // 👇 Trigger the causal analysis
+                        onRun(feature, deltaValue)
+
+                        // 👇 Dismiss the keyboard
+                        focusedField = nil
+                    }) {
+                        Text("Run Analysis")
+                            .frame(maxWidth: .infinity)
                     }
-                    onRun(feature, deltaValue)
+                    .buttonStyle(.borderedProminent)
                 }
-                .buttonStyle(.borderedProminent)
+                .padding()
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(10)
             }
+
+            Divider()
 
             Chart {
                 ForEach(effects, id: \.label) { effect in
-                    BarMark(
-                        x: .value("Type", effect.label),
-                        y: .value("Effect", effect.value)
-                    )
-                    .foregroundStyle(effect.color.gradient)
-                    .annotation(position: .top) {
-                        Text(String(format: "%.2f", effect.value))
-                            .font(.caption)
-                            .foregroundColor(.primary)
+                    if let value = effect.value {
+                        BarMark(
+                            x: .value("Effect Type", effect.label),
+                            y: .value("Effect Value", value)
+                        )
+                        .foregroundStyle(effect.color.gradient)
+                        .annotation(position: .top) {
+                            Text(String(format: "%.4f", value))
+                                .font(.caption)
+                                .foregroundColor(.primary)
+                        }
                     }
                 }
             }
-            .frame(height: 200)
+            .frame(height: 220)
             .chartYAxisLabel("Effect Value")
             .chartXAxisLabel("Effect Type")
 
-            ForEach(effects, id: \.label) { effect in
-                HStack {
-                    Circle()
-                        .fill(effect.color)
-                        .frame(width: 12, height: 12)
-                    Text("\(effect.label): \(effect.description)")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("🧠 Interpretation Guide")
+                    .font(.subheadline.bold())
+                ForEach(effects, id: \.label) { effect in
+                    HStack(alignment: .top, spacing: 8) {
+                        Circle()
+                            .fill(effect.color)
+                            .frame(width: 12, height: 12)
+                            .padding(.top, 2)
+                        Text("\(effect.label): \(effect.description)")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
         }
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 2)
+        .cornerRadius(16)
+        .shadow(radius: 3)
     }
 }

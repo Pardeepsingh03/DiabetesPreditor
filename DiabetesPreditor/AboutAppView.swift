@@ -1,13 +1,18 @@
+//
+//  AboutAppView.swift
+//  DiabetesPreditor
+//
+//  Created by Parry  on 05/08/2025.
+//
+
+
 import SwiftUI
 
 struct AboutAppView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("About This App")
-                    .font(.largeTitle)
-                    .bold()
-
+                
                 Text("Diabix is a smart health companion designed to help predict the risk of diabetes using explainable machine learning models. It integrates clinical data with AI-powered predictions, causal reasoning, and intuitive visualizations to support proactive health management.")
                 
                 Text("Core Features")

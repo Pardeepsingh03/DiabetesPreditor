@@ -5,7 +5,8 @@
 //  Created by Parry  on 16/07/2025.
 //
 
-struct PredictionResponse: Codable {
+struct PredictResponse: Codable {
+    let input: PatientInput
     let prediction: Int
     let confidence: Double
     let anchor_rule: [String]

@@ -13,7 +13,7 @@ struct ExplanationGraphView: View {
                         .font(.caption)
                         .foregroundColor(.gray)
 
-                    AsyncImage(url: URL(string: "http://127.0.0.1:8000/shap")) { image in
+                    AsyncImage(url: URL(string: "http://127.0.0.1:8000/shap_summary")) { image in
                         image
                             .resizable()
                             .scaledToFit()

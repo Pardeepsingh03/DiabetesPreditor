@@ -17,13 +17,14 @@ struct ProfileView: View {
                             ProfileRowView(icon: "clock", title: "Prediction History")
                         }
                         
-                        NavigationLink(destination: Text("About App Screen")) {
-                            ProfileRowView(icon: "info.circle", title: "About App")
-                        }
-                        
-                        NavigationLink(destination: Text("Privacy Policy Screen")) {
-                            ProfileRowView(icon: "lock.shield", title: "Privacy Policy")
-                        }
+                        NavigationLink(destination: AboutAppView()) {
+                                                   ProfileRowView(icon: "info.circle", title: "About App")
+                                               }
+                                               
+                                               NavigationLink(destination: PrivacyPolicyView()) {
+                                                   ProfileRowView(icon: "lock.shield", title: "Privacy Policy")
+                                               }
+                                               
                         
                         Button(action: {
                             // Handle logout logic here
