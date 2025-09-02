@@ -107,7 +107,7 @@ struct PredictionGraphView: View {
                     HealthDataInputView()
                 }
                 .task {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         viewModel.loadLatestPrediction()
                     }
                     
